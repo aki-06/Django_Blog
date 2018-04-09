@@ -1,5 +1,7 @@
 {% extends 'blog/base.html' %}
 
 {% block content %}
-	<h1>記事の一覧</h1>_
+	{% for post in post_list %}
+	<h2>{{ post.title }}</h2>
+	{% endfor %}
 {% endblock %}
