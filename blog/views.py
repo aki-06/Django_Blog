@@ -1,7 +1,8 @@
 from django.db.models import Q
 from django.views import generic
-from .models import Post, Category
-from django.shortcuts import get_object_or_404
+from .forms import CommentCreateForm
+from .models import Post, Category, Comment
+from django.shortcuts import get_object_or_404, redirect
 
 
 class IndexView(generic.ListView):
@@ -35,3 +36,17 @@ class CategoryView(generic.ListView):
 
 class DetailView(generic.DetailView):
 	model = Post
+
+
+class CommentView(generic.CreateView):
+	model = Comment
+	form_class = CommentCreateForm
+
+	def form_valid(self, form):
+		post_pk = self.kwargs['post_pk']
+		comment = form.save(commit=False)
+		comment.post = get_object_or_404(Post, pk=post_pk)
+		comment.save()
+		return redirect('blog:detail', pk=post_pk)
+
+
